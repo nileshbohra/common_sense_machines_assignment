@@ -1,7 +1,9 @@
+import Login from "./views/Login";
+
 function App() {
   return (
     <div className="App">
-      <div>HELLO</div>
+      <Login />
     </div>
   );
 }
