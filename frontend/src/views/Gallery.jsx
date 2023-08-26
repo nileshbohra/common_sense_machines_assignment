@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { uploadImage } from "../controllers/gallery.controller";
 import { useLocation } from "react-router-dom";
 import { getAllImages } from "../controllers/gallery.controller";
 
 export default function Gallery() {
   const location = useLocation();
+  const navigate = useNavigate();
   const uid = location.pathname.split("/").pop();
   let files;
 
@@ -16,15 +18,18 @@ export default function Gallery() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!files) return alert("Please select a file");
     const data = new FormData();
     data.append("image", files[0]);
     data.append("uid", uid);
 
     uploadImage(data, (err, data) => {
       if (err) {
-        console.log(err);
+        console.log(err.response.data.status);
+        alert(err.response.data.status);
       } else {
         console.log(data);
+        alert("Image uploaded successfully");
       }
     });
   };
@@ -40,29 +45,74 @@ export default function Gallery() {
     });
   };
 
+  useEffect(() => {
+    getImages();
+  }, []);
+
+  const handleSubscription = () => {
+    navigate(`/subscription/${uid}`);
+  };
+
   return (
     <>
-      <div>
-        <h1>Image Upload</h1>
-        <p>Upload your images here</p>
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-          <input
-            type="file"
-            onChange={(e) => handleUpload(e)}
-            name="image"
-            id="image"
-            accept="image/*"
-          />
-          <input type="submit" value="Upload" />
-        </form>
+      <div className="container">
+        <div className="flex justify-between bg-gray-100 w-full p-2">
+          <h1 className="flex justify-center items-center gap-1 text-lg font-medium">
+            <i className="material-icons">cloud_upload</i>
+            Image Upload
+          </h1>
+          <button
+            onClick={handleSubscription}
+            className="btn bg-green-600 flex justify-center items-center gap-1"
+          >
+            Upgrade Plan
+            <i className="material-icons">whatshot</i>
+          </button>
+        </div>
+        <div className="flex justify-between items-center bg-gray-200 w-full p-2">
+          <form
+            onSubmit={handleSubmit}
+            encType="multipart/form-data"
+            className="flex justify-center w-full items-center"
+          >
+            <div className="form-group">
+              <input
+                type="file"
+                onChange={(e) => handleUpload(e)}
+                name="image"
+                id="image"
+                accept="image/*"
+              />
+            </div>
+            <button type="submit" className="btn bg-blue-600">
+              Upload
+            </button>
+          </form>
+        </div>
         <div>
-          <h1>Image Gallery</h1>
-          <p>View your images here</p>
-          <button onClick={getImages}>View Gallery</button>
-          <div style={{ width: "90vw", height: "50vw", display: "flex", gap: "10px", margin: "10px"}}>
+          <div className="flex justify-between items-center bg-gray-300 w-full px-2 py-4">
+            <h1>Image Gallery</h1>
+            <button
+              onClick={getImages}
+              className="btn bg-blue-600 flex justify-center items-center gap-1"
+            >
+              Refresh Gallery
+              <i className="material-icons">refresh</i>
+            </button>
+          </div>
+          <div className="grid grid-flow-row-dense grid-cols-4 gap-1 mt-2">
             {images.map((image) => (
-              <div style={{height: "200px", overflow: "hidden"}}>
-                <img style={{width: "100%", height: "100%"}} src={image.url} alt={image.name} key={image._id} />
+              <div
+                className="flex justify-center items-center border-2 border-gray-400"
+                style={{ width: "100%", height: "200px", overflow: "hidden" }}
+                key={image.url}
+              >
+                <img
+                  style={{ height: "100%" }}
+                  src={image.url}
+                  alt={image.name}
+                  key={image._id}
+                />
               </div>
             ))}
           </div>
