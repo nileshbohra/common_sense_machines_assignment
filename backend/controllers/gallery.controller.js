@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const path = require('path');
+const Plans = require('../models/Plans');
 const galleryController = {};
 const cloudinary = require('cloudinary').v2;
 const parser = require('../utils/dataUri.utils').parser;
@@ -18,7 +18,9 @@ galleryController.uploadImage = async (req, res) => {
                         status: 'User not found'
                     });
                 } else {
-                    if (user.plan == "free" && (!!user.last_uploaded_at && user.last_uploaded_at > Date.now() - 1000 * 60 * 60 * 1)) {
+                    const currentPlan = await Plans.findById(user.subscription.plan_id);
+                    console.log("this is currentPlan", currentPlan);
+                    if (currentPlan.name == "Free" && (!!user.last_uploaded_at && user.last_uploaded_at > Date.now() - 1000 * 60 * 60 * 1)) {
                         res.status(403).json({
                             status: 'You can only upload one image per hour or you can upgrade to pro plan'
                         });
@@ -55,6 +57,7 @@ galleryController.uploadImage = async (req, res) => {
                     }
                 }
             } catch (err) {
+                console.log(err);
                 res.status(500).json({
                     status: 'Internal server error'
                 });
