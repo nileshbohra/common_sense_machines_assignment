@@ -1,14 +1,22 @@
 import React from "react";
 import { login } from "../controllers/auth.controller";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = {
       email: e.target.email.value,
-      password: e.target.password.value
+      password: e.target.password.value,
     };
-    login(data);
+    login(data, (err, data) => {
+      if (err) {
+        console.log(err);
+      } else {
+        navigate(`/gallery/${data.user._id}`);
+      }
+    });
   };
 
   return (
@@ -21,7 +29,7 @@ export default function Login() {
         <button type="submit">Login</button>
       </form>
       <p>
-        Don't have a account? <a href="/signup">signup</a> instead.
+        Don't have a account? <Link to="/signup">signup</Link> instead.
       </p>
     </>
   );
