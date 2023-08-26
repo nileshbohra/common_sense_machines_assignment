@@ -27,7 +27,7 @@ export default function Subscription() {
     const session_id = searchParams.get("session_id");
     const plan_id = searchParams.get("plan_id");
     const status = searchParams.get("status");
-    
+
     if (!!session_id && !!plan_id && !!status) {
       if (status === "success") {
         const data = {
@@ -37,12 +37,9 @@ export default function Subscription() {
         };
         upgradePlan(data, (err, data) => {
           if (!!err) {
-            console.log(err);
+            alert(err.response.data.status);
           } else {
-            console.log(
-              "this is the data from the upgrade plan controller",
-              data
-            );
+            alert("Payment successful");
             setSearchParams("");
             navigate(`/gallery/${uid}`);
           }
@@ -60,7 +57,7 @@ export default function Subscription() {
     };
     upgradePlan(data, (err, data) => {
       if (!!err) {
-        console.log(err);
+        alert(err.response.data.status);
       } else {
         window.location.href = data.url;
       }

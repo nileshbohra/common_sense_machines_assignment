@@ -25,10 +25,8 @@ export default function Gallery() {
 
     uploadImage(data, (err, data) => {
       if (err) {
-        console.log(err.response.data.status);
         alert(err.response.data.status);
       } else {
-        console.log(data);
         alert("Image uploaded successfully");
       }
     });
@@ -37,9 +35,8 @@ export default function Gallery() {
   const getImages = () => {
     getAllImages(uid, (err, data) => {
       if (err) {
-        console.log(err);
+        alert(err.response.data.status);
       } else {
-        console.log(data);
         setImages(data.images);
       }
     });

@@ -1,8 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { signup } from "../controllers/auth.controller";
 
 export default function Signup() {
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = {
@@ -13,9 +15,10 @@ export default function Signup() {
     };
     signup(data, (err, data) => {
       if (err) {
-        console.log(err);
+        alert(err.response.data.status);
       } else {
-        console.log(data);
+        alert("Signup successful");
+        navigate(`/login`);
       }
     });
   };

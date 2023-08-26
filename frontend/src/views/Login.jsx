@@ -12,8 +12,9 @@ export default function Login() {
     };
     login(data, (err, data) => {
       if (err) {
-        console.log(err);
+        alert(err.response.data.status);
       } else {
+        alert("Login successful");
         navigate(`/gallery/${data.user._id}`);
       }
     });
@@ -55,7 +56,11 @@ export default function Login() {
               </button>
             </form>
             <p>
-              Don't have a account? <Link to="/signup" style={{color: "blue"}}>signup</Link> instead.
+              Don't have a account?{" "}
+              <Link to="/signup" style={{ color: "blue" }}>
+                signup
+              </Link>{" "}
+              instead.
             </p>
           </div>
         </div>
