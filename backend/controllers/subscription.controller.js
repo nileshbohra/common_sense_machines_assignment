@@ -30,7 +30,7 @@ subscriptionController.upgradePlan = async (req, res) => {
     try {
         const { uid } = req.body;
         const user = await User.findById(uid);
-        console.log(req.body);
+        
         if (!user) {
             return res.status(404).json({
                 status: 'User not found'

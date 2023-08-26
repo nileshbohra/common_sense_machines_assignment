@@ -19,7 +19,6 @@ galleryController.uploadImage = async (req, res) => {
                     });
                 } else {
                     const currentPlan = await Plans.findById(user.subscription.plan_id);
-                    console.log("this is currentPlan", currentPlan);
                     if (currentPlan.name == "Free" && (!!user.last_uploaded_at && user.last_uploaded_at > Date.now() - 1000 * 60 * 60 * 1)) {
                         res.status(403).json({
                             status: 'You can only upload one image per hour or you can upgrade to pro plan'

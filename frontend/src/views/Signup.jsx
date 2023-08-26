@@ -84,7 +84,7 @@ export default function Signup() {
                 name="action"
               >
                 Sign Up
-                <i class="material-icons right">send</i>
+                <i className="material-icons right">send</i>
               </button>
             </form>
             <p>

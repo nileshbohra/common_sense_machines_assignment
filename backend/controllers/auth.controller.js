@@ -5,7 +5,7 @@ const authController = {};
 authController.signup = async (req, res) => {
     try {
         const userPresent = await User.findOne({ email: req.body.email });
-        if (userPresent) {
+        if (!!userPresent) {
             res.status(403).json({
                 status: 'User already exists'
             });
@@ -37,9 +37,16 @@ authController.login = async (req, res) => {
 
     try {
         const user = await User.findOne({ email: email });
-        if (user) {
+        if (!!user) {
             if (bcrypt.compareSync(password, user.password)) {
-                res.status(200).json({ user: user });
+                let userObj = {
+                    _id: user._id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    subscription: user.subscription,
+                }
+                res.status(200).json({ user: userObj });
             } else {
                 res.status(403).json({
                     status: 'Wrong password'

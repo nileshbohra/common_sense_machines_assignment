@@ -12,7 +12,7 @@ export default function NavBar() {
         className="flex items-center justify-center gap-3 text-white text-center"
         onClick={handleClick}
       >
-        <i class="material-icons">cloud</i>
+        <i className="material-icons">cloud</i>
         CloudUpload
       </h1>
     </div>

@@ -11,7 +11,7 @@ export default function Login() {
       password: e.target.password.value,
     };
     login(data, (err, data) => {
-      if (err) {
+      if (!!err) {
         alert(err.response.data.status);
       } else {
         alert("Login successful");
@@ -52,7 +52,7 @@ export default function Login() {
                 name="action"
               >
                 Login
-                <i class="material-icons right">send</i>
+                <i className="material-icons right">send</i>
               </button>
             </form>
             <p>

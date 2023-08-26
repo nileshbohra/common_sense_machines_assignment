@@ -5,7 +5,7 @@ export const signup = async (user, callback) => {
     await axios.post(`${API_URL}/auth/signup`, user).then((res) => {
         callback(null, res.data);
     }).catch((err) => {
-        callback(err.response.data.status, null);
+        callback(err, null);
     });
 }
 
@@ -13,7 +13,7 @@ export const login = async (user, callback) => {
     await axios.post(`${API_URL}/auth/login`, user).then((res) => {
         callback(null, res.data);
     }).catch((err) => {
-        callback(err.response.data.status, null);
+        callback(err, null);
     });
 }
 
