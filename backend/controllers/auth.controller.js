@@ -7,7 +7,7 @@ authController.signup = async (req, res) => {
         const userPresent = await User.findOne({ email: req.body.email });
         if (userPresent) {
             res.status(403).json({
-                'status': 'User already exists'
+                status: 'User already exists'
             });
         } else {
             req.body.password = bcrypt.hashSync(req.body.password, 10);
@@ -25,9 +25,8 @@ authController.signup = async (req, res) => {
             });
         }
     } catch (err) {
-        console.log(err);
         res.status(500).json({
-            'status': 'Internal server error'
+            status: 'Internal server error'
         });
     }
 }
@@ -38,24 +37,23 @@ authController.login = async (req, res) => {
 
     try {
         const user = await User.findOne({ email: email });
-
         if (user) {
             if (bcrypt.compareSync(password, user.password)) {
                 res.status(200).json({ user: user });
             } else {
                 res.status(403).json({
-                    'status': 'Wrong password'
+                    status: 'Wrong password'
                 });
             }
         } else {
             res.status(404).json({
-                'status': 'User not found'
+                status: 'User not found'
             });
         }
     } catch (err) {
         console.log(err);
         res.status(500).json({
-            'status': 'Internal server error'
+            status: 'Internal server error'
         });
     }
 }

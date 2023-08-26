@@ -1,15 +1,14 @@
 require('dotenv').config();
-const express = require('express');
-const app = express();
+const app = require("./app");
 const PORT = process.env.PORT || 3001;
 const mongoose = require('mongoose');
 const MONGODB_URI = process.env.MONGODB_URI;
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
-    cloud_name: process.env.cloudinary_cloud_name,
-    api_key: process.env.cloudinary_api_key,
-    api_secret: process.env.cloudinary_api_secret
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 mongoose.connect(MONGODB_URI, {
@@ -20,5 +19,4 @@ mongoose.connect(MONGODB_URI, {
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
-    
 });
