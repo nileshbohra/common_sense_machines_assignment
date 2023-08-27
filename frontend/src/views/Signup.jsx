@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { signup } from "../controllers/auth.controller";
+import { toast } from "react-toastify";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -15,10 +16,10 @@ export default function Signup() {
     };
     signup(data, (err, data) => {
       if (err) {
-        alert(err.response.data.status);
+        toast.error(err.response.data.status);
       } else {
-        alert("Signup successful");
-        navigate(`/login`);
+        toast.success("Signup Success");
+        navigate(`/gallery/${data.user._id}`);
       }
     });
   };
@@ -65,15 +66,6 @@ export default function Signup() {
                   type="password"
                   id="password"
                   name="password"
-                  className="form-control"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Confirm Password</label>
-                <input
-                  type="password"
-                  id="password_confirm"
-                  name="password_confirm"
                   className="form-control"
                 />
               </div>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { downloadImage, uploadImage } from "../controllers/gallery.controller";
 import { useLocation } from "react-router-dom";
 import { getAllImages } from "../controllers/gallery.controller";
+import { toast } from "react-toastify";
 
 export default function Gallery() {
   const location = useLocation();
@@ -23,7 +24,7 @@ export default function Gallery() {
     };
     downloadImage(data, async (err, response) => {
       if (!!err) {
-        alert(err.response.data.status);
+        toast.error(err.response.data.status);
       } else {
         const blob = new Blob([response.data]);
         const url = window.URL.createObjectURL(blob);
@@ -40,16 +41,16 @@ export default function Gallery() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!files) return alert("Please select a file");
+    if (!files) return toast.error("Please select a file");
     const data = new FormData();
     data.append("image", files[0]);
     data.append("uid", uid);
 
     uploadImage(data, (err, data) => {
       if (err) {
-        alert(err.response.data.status);
+        toast.error(err.response.data.status);
       } else {
-        alert("Image uploaded successfully");
+        toast.success("Image uploaded successfully");
       }
     });
   };
@@ -57,7 +58,7 @@ export default function Gallery() {
   const getImages = () => {
     getAllImages(uid, (err, data) => {
       if (err) {
-        alert(err.response.data.status);
+        toast.error(err.response.data.status);
       } else {
         setImages(data.images);
       }

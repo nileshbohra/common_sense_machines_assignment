@@ -4,6 +4,7 @@ import {
   upgradePlan,
 } from "../controllers/subscription.controller";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Subscription() {
   const [plans, setPlans] = React.useState([]);
@@ -37,15 +38,17 @@ export default function Subscription() {
         };
         upgradePlan(data, (err, data) => {
           if (!!err) {
-            alert(err.response.data.status);
+            toast.error(err.response.data.status);
           } else {
-            alert("Payment successful");
+            toast.success("Payment success");
             setSearchParams("");
             navigate(`/gallery/${uid}`);
           }
         });
       } else {
-        alert("Payment failed");
+        toast.error("Payment failed");
+        setSearchParams("");
+        navigate(`/gallery/${uid}`);
       }
     }
   }, [searchParams]);
@@ -57,7 +60,7 @@ export default function Subscription() {
     };
     upgradePlan(data, (err, data) => {
       if (!!err) {
-        alert(err.response.data.status);
+        toast.error(err.response.data.status);
       } else {
         window.location.href = data.url;
       }

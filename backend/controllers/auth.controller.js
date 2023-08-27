@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const sendToken = require('../utils/sendToken');
 const authController = {};
 
 authController.signup = async (req, res) => {
@@ -13,16 +14,8 @@ authController.signup = async (req, res) => {
             req.body.password = bcrypt.hashSync(req.body.password, 10);
             const user = new User(req.body);
             await user.save();
-            let userObj = {
-                _id: user._id,
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                subscription: user.subscription,
-            }
-            res.status(200).json({
-                user: userObj
-            });
+
+            sendToken(user, 200, res);
         }
     } catch (err) {
         res.status(500).json({
@@ -36,20 +29,13 @@ authController.login = async (req, res) => {
     let email = req.body.email;
 
     try {
-        const user = await User.findOne({ email: email });
+        const user = await User.findOne({ email: email }).select('+password');
         if (!!user) {
             if (bcrypt.compareSync(password, user.password)) {
-                let userObj = {
-                    _id: user._id,
-                    email: user.email,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    subscription: user.subscription,
-                }
-                res.status(200).json({ user: userObj });
+                sendToken(user, 200, res);
             } else {
                 res.status(403).json({
-                    status: 'Wrong password'
+                    status: 'Please check your email and password'
                 });
             }
         } else {
@@ -59,6 +45,21 @@ authController.login = async (req, res) => {
         }
     } catch (err) {
         console.log(err);
+        res.status(500).json({
+            status: 'Internal server error'
+        });
+    }
+}
+
+authController.logout = async (req, res) => {
+    try {
+        res.status(200).cookie('token', null, {
+            expires: new Date(Date.now()),
+            httpOnly: true
+        }).json({
+            status: 'Logged out successfully'
+        });
+    } catch (err) {
         res.status(500).json({
             status: 'Internal server error'
         });

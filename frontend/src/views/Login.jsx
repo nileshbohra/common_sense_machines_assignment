@@ -1,6 +1,7 @@
 import React from "react";
 import { login } from "../controllers/auth.controller";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -12,9 +13,9 @@ export default function Login() {
     };
     login(data, (err, data) => {
       if (!!err) {
-        alert(err.response.data.status);
+        toast.error(err.response.data.status);
       } else {
-        alert("Login successful");
+        toast.success("Login Success");
         navigate(`/gallery/${data.user._id}`);
       }
     });
