@@ -5,6 +5,8 @@ const cloudinary = require('cloudinary').v2;
 const parser = require('../utils/dataUri.utils').parser;
 const Image = require('../models/Image');
 const async = require('async');
+const axios = require('axios');
+const stream = require('stream');
 
 galleryController.uploadImage = async (req, res) => {
     if (!!req.files) {
@@ -122,5 +124,46 @@ galleryController.deleteImage = async (req, res) => {
         });
     }
 }
+
+galleryController.downloadImage = async (req, res) => {
+    const { uid, image_id } = req.params;
+    try {
+        const user = await User.findById(uid);
+        if (!user) {
+            res.status(404).json({
+                status: 'User not found'
+            });
+        } else {
+            const image = await Image.findById(image_id);
+            if (!image) {
+                res.status(404).json({
+                    status: 'Image not found'
+                });
+            } else {
+                if (image.user_id !== uid) {
+                    res.status(403).json({
+                        status: 'You are not authorized to download this image'
+                    });
+                } else {
+                    const imageUrl = image.url;
+                    const response = await axios({
+                        url: imageUrl,
+                        method: 'GET',
+                        responseType: 'stream'
+                    });
+                    res.setHeader('Content-disposition', `attachment; filename=${image.name}`);
+                    res.setHeader('Content-type', 'application/octet-stream');
+
+                    response.data.pipe(res);
+                }
+            }
+        }
+    } catch (err) {
+        res.status(500).json({
+            status: 'Internal server error'
+        });
+    }
+}
+
 
 module.exports = galleryController;

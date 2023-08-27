@@ -18,3 +18,12 @@ export const getAllImages = async (uid, callback) => {
         callback(error, null);
     });
 }
+
+export const downloadImage = async (data, callback) => {
+    const { uid, image_id } = data;
+    await axios.get(`${API_URL}/gallery/${uid}/download/${image_id}`, { responseType: 'blob' }).then(res => {
+        callback(null, res);
+    }).catch(error => {
+        callback(error, null);
+    });
+}

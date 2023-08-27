@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { uploadImage } from "../controllers/gallery.controller";
+import { downloadImage, uploadImage } from "../controllers/gallery.controller";
 import { useLocation } from "react-router-dom";
 import { getAllImages } from "../controllers/gallery.controller";
 
@@ -14,6 +14,28 @@ export default function Gallery() {
 
   const handleUpload = (e) => {
     files = e.target.files;
+  };
+
+  const handleDownload = (uid, image_id, image_name) => {
+    const data = {
+      uid: uid,
+      image_id: image_id,
+    };
+    downloadImage(data, async (err, response) => {
+      if (!!err) {
+        alert(err.response.data.status);
+      } else {
+        const blob = new Blob([response.data]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+
+        a.href = url;
+        a.download = image_name;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    });
   };
 
   const handleSubmit = (e) => {
@@ -48,6 +70,15 @@ export default function Gallery() {
 
   const handleSubscription = () => {
     navigate(`/subscription/${uid}`);
+  };
+
+  const formatImageName = (name) => {
+    if (name.length > 30) {
+      const ext = name.split(".").pop();
+      return name.split(".")[0].slice(0, 30) + "..." + ext;
+    } else {
+      return name;
+    }
   };
 
   return (
@@ -100,16 +131,24 @@ export default function Gallery() {
           <div className="grid grid-flow-row-dense grid-cols-4 gap-1 mt-2">
             {images.map((image) => (
               <div
-                className="flex justify-center items-center border-2 border-gray-400"
+                className="flex flex-col justify-center items-center border-2 border-gray-400"
                 style={{ width: "100%", height: "200px", overflow: "hidden" }}
                 key={image.url}
               >
                 <img
-                  style={{ height: "100%" }}
+                  style={{ height: "90%" }}
                   src={image.url}
                   alt={image.name}
                   key={image._id}
                 />
+                <div className="flex w-full justify-between items-center">
+                  <p className="text-sm">{formatImageName(image.name)}</p>
+                  <button
+                    onClick={(e) => handleDownload(uid, image._id, image.name)}
+                  >
+                    <i className="material-icons">file_download</i>
+                  </button>
+                </div>
               </div>
             ))}
           </div>
